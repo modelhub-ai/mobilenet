@@ -12,6 +12,11 @@ class ImageProcessor(ImageProcessorBase):
 
     def _preprocessBeforeConversionToNumpy(self, image):
         if isinstance(image, PIL.Image.Image):
+            image = np.array(image).astype(np.float32)
+            if len(image.shape) > 2:
+                image = image[:,:,0:3]
+            else:
+                image = np.stack((image,)*3, axis=-1)
             arr = mx.nd.array(image)
             transform_fn = transforms.Compose([
             transforms.Resize(256),
